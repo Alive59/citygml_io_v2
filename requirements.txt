@@ -1,0 +1,10 @@
+# Python dependencies for CityGML I/O Python implementation
+#
+# Core dependencies:
+# - pyproj: Coordinate transformation (equivalent to PROJ in C++)
+# - mapbox_earcut: Polygon triangulation (equivalent to earcut.hpp)
+#
+# Install with: pip install -r requirements.txt
+
+pyproj>=3.0.0
+mapbox_earcut>=1.0.0
