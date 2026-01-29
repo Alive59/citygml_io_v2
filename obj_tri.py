@@ -272,7 +272,11 @@ def obj_face_earcut(face: MeshFace) -> List[MeshFace]:
     if abs(area) < 1e-10:
         # print(f"Warning: Degenerate polygon with near-zero area: {area}")
         return []
-    
+
+    # Ensure consistent winding order (CCW = positive area)
+    # If area is negative, the polygon is CW, so we need to track this
+    is_ccw = area > 0
+
     # Flatten 2D vertices for earcut
     vertices_2d = []
     for u, v in vertices_2d_tuples:
@@ -328,17 +332,18 @@ def obj_face_earcut(face: MeshFace) -> List[MeshFace]:
                     continue
                 
                 f = MeshFace(face=fvs)
-                
+
                 # Check normal orientation against original face normal
                 ft_normal = face_normal(f)
                 dot_product = (f_normal[0] * ft_normal[0] +
                               f_normal[1] * ft_normal[1] +
                               f_normal[2] * ft_normal[2])
-                
+
                 # Reverse winding if normals point in opposite directions
-                if dot_product < -0.5:  # Use threshold to avoid numerical issues
+                # Use a stricter threshold: negative dot product means opposite direction
+                if dot_product < 0:
                     f.face.reverse()
-                
+
                 face_triangles.append(f)
             except (IndexError, ValueError) as e:
                 print(f"Warning: Error creating triangle: {e}")

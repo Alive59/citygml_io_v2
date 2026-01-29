@@ -43,11 +43,12 @@ def obj_writer_remap(obj_out: TextIO, faces: MeshFaceIndexed):
     """
     # Write vertices
     for vertex in faces.vertices:
-        obj_out.write(f"v {vertex.x:.12f} {vertex.y:.12f} {vertex.z:.12f}\n")
+        obj_out.write(f"v {vertex.x:.12f} {vertex.z:.12f} {vertex.y:.12f}\n")
 
     # Write faces with indices (OBJ uses 1-based indexing)
+    # Reverse the index order to flip face winding (fixes inverted normals)
     for face in faces.faces:
         obj_out.write("f")
-        for idx in face:
+        for idx in reversed(face):
             obj_out.write(f" {idx + 1}")
         obj_out.write("\n")
